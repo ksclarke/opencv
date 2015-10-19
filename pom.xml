@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.opencv</groupId>
+  <artifactId>opencv</artifactId>
+  <version>3.0.0-SNAPSHOT</version>
+  <name>OpenCV</name>
+  <packaging>jar</packaging>
+  <description>Java API for OpenCV</description>
+
+  <licenses>
+    <license>
+      <name>The BSD 3-Clause License</name>
+      <url>https://raw.githubusercontent.com/Itseez/opencv/master/LICENSE</url>
+    </license>
+  </licenses>
+
+  <scm>
+    <connection>scm:git:git@github.com:Itseez/opencv.git</connection>
+    <developerConnection>scm:git:https://github.com/Itseez/opencv.git</developerConnection>
+    <url>https://github.com/Itseez/opencv</url>
+  </scm>
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/Itseez/opencv/issues</url>
+  </issueManagement>
+
+  <organization>
+    <name>Itseez</name>
+    <url>http://itseez.com/</url>
+  </organization>
+
+  <properties>
+    <cmake.maven.plugin.version>3.3.2-b1-SNAPSHOT</cmake.maven.plugin.version>
+    <maven.jar.plugin.version>2.6</maven.jar.plugin.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>com.googlecode.cmake-maven-project</groupId>
+        <artifactId>cmake-maven-plugin</artifactId>
+        <version>${cmake.maven.plugin.version}</version>
+        <executions>
+          <execution>
+            <id>cmake-generate</id>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <sourcePath>${project.basedir}</sourcePath>
+              <targetPath>${project.build.directory}/opencv</targetPath>
+              <generator>${cmake.generator}</generator>
+              <options>
+                <option>-DBUILD_SHARED_LIBS=OFF</option>
+              </options>
+              <environmentVariables>
+                <CFLAGS>-Wa,--noexecstack</CFLAGS>
+              </environmentVariables>
+            </configuration>
+          </execution>
+          <execution>
+            <id>cmake-compile</id>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+            <configuration>
+              <projectDirectory>${project.build.directory}/opencv</projectDirectory>
+            </configuration>
+          </execution>
+          <!-- <execution> <id>cmake-test</id> <goals> <goal>test</goal> </goals> <configuration> <buildDirectory>${project.build.directory}/opencv</buildDirectory> 
+            </configuration> </execution> -->
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>${maven.jar.plugin.version}</version>
+        <configuration>
+          <classesDirectory>${project.build.directory}/opencv/src</classesDirectory>
+          <includes>
+            <include>**/*.class</include>
+          </includes>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>linux64</id>
+      <activation>
+        <os>
+          <name>Linux</name>
+          <arch>!i386</arch>
+        </os>
+      </activation>
+      <properties>
+        <cmake.generator>Unix Makefiles</cmake.generator>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-jar-plugin</artifactId>
+            <executions>
+              <execution>
+                <phase>package</phase>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+                <configuration>
+                  <classesDirectory>${project.build.directory}/opencv/lib</classesDirectory>
+                  <classifier>linux64</classifier>
+                  <includes>
+                    <include>*.so</include>
+                  </includes>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>linux32</id>
+      <activation>
+        <os>
+          <name>Linux</name>
+          <arch>i386</arch>
+        </os>
+      </activation>
+      <properties>
+        <cmake.generator>Unix Makefiles</cmake.generator>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-jar-plugin</artifactId>
+            <executions>
+              <execution>
+                <phase>package</phase>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+                <configuration>
+                  <classesDirectory>${project.build.directory}/opencv/lib</classesDirectory>
+                  <classifier>linux32</classifier>
+                  <includes>
+                    <include>*.so</include>
+                  </includes>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>mac64</id>
+      <activation>
+        <os>
+          <name>Mac OS X</name>
+          <arch>x86_64</arch>
+        </os>
+      </activation>
+      <properties>
+        <cmake.generator>Unix Makefiles</cmake.generator>
+      </properties>
+    </profile>
+    <profile>
+      <id>windows</id>
+      <activation>
+        <os>
+          <family>windows</family>
+        </os>
+      </activation>
+      <properties>
+        <cmake.generator>Unix Makefiles</cmake.generator>
+      </properties>
+    </profile>
+
+    <!-- The release-sign-artifacts profile allows for the publishing of project artifact -->
+    <profile>
+      <id>release-sign-artifacts</id>
+      <activation>
+        <property>
+          <name>performRelease</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
+  <parent>
+    <groupId>org.sonatype.oss</groupId>
+    <artifactId>oss-parent</artifactId>
+    <version>7</version>
+  </parent>
+
+</project>
