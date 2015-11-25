@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.opencv</groupId>
+  <groupId>info.freelibrary</groupId>
   <artifactId>opencv</artifactId>
   <version>3.0.0-SNAPSHOT</version>
   <name>OpenCV</name>
@@ -32,6 +32,21 @@
   </organization>
 
   <properties>
+    <!-- All things that are on that I'm turning off for now -->
+    <WITH_1394>OFF</WITH_1394>
+    <WITH_VTK>OFF</WITH_VTK>
+    <WITH_FFMPEG>OFF</WITH_FFMPEG>
+    <WITH_GSTREAMER>OFF</WITH_GSTREAMER>
+    <WITH_GTK>OFF</WITH_GTK>
+    <WITH_OPENEXR>OFF</WITH_OPENEXR>
+    <WITH_PVAPI>OFF</WITH_PVAPI>
+    <WITH_GIGEAPI>OFF</WITH_GIGEAPI>
+    <WITH_V4L>OFF</WITH_V4L>
+    <WITH_LIBV4L>OFF</WITH_LIBV4L>
+    <WITH_GPHOTO2>OFF</WITH_GPHOTO2>
+    <BUILD_opencv_apps>OFF</BUILD_opencv_apps>
+    <BUILD_DOCS>OFF</BUILD_DOCS>
+
     <cmake.maven.plugin.version>3.3.2-b1-SNAPSHOT</cmake.maven.plugin.version>
     <maven.jar.plugin.version>2.6</maven.jar.plugin.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -54,7 +69,36 @@
               <targetPath>${project.build.directory}/opencv</targetPath>
               <generator>${cmake.generator}</generator>
               <options>
-                <option>-DBUILD_SHARED_LIBS=OFF</option>
+                <option>-DBUILD_SHARED_LIBS:BOOL=OFF</option>
+
+                <!-- Ues the packaged versions so they'll be statically compiled with OpenCV -->
+                <option>-DBUILD_TIFF:BOOL=ON</option>
+                <option>-DBUILD_ZLIB:BOOL=ON</option>
+                <option>-DBUILD_PNG:BOOL=ON</option>
+                <option>-DBUILD_JPEG:BOOL=ON</option>
+                <option>-DBUILD_JASPER:BOOL=ON</option>
+
+                <!-- Things I'm temporarily turning off -->
+                <option>-DBUILD_TESTS:BOOL=OFF</option>
+                <option>-DBUILD_PERF_TESTS:BOOL=OFF</option>
+                <option>-DBUILD_EXAMPLES:BOOL=OFF</option>
+
+                <option>-DBUILD_opencv_python2:BOOL=OFF</option>
+                <option>-DBUILD_opencv_python3:BOOL=OFF</option>
+
+                <option>-DWITH_1394:BOOL=${WITH_1394}</option>
+                <option>-DWITH_VTK:BOOL=${WITH_VTK}</option>
+                <option>-DWITH_FFMPEG:BOOL=${WITH_FFMPEG}</option>
+                <option>-DWITH_GSTREAMER:BOOL=${WITH_GSTREAMER}</option>
+                <option>-DWITH_GTK:BOOL=${WITH_GTK}</option>
+                <option>-DWITH_OPENEXR:BOOL=${WITH_OPENEXR}</option>
+                <option>-DWITH_PVAPI:BOOL=${WITH_PVAPI}</option>
+                <option>-DWITH_GIGEAPI:BOOL=${WITH_GIGEAPI}</option>
+                <option>-DWITH_V4L:BOOL=${WITH_V4L}</option>
+                <option>-DWITH_GPHOTO2:BOOL=${WITH_GPHOTO2}</option>
+                <option>-DBUILD_opencv_apps:BOOL=${BUILD_opencv_apps}</option>
+                <option>-DBUILD_DOCS:BOOL=${BUILD_DOCS}</option>
+                <option>-Wno-dev</option>
               </options>
               <environmentVariables>
                 <CFLAGS>-Wa,--noexecstack</CFLAGS>
