@@ -4,7 +4,7 @@ package org.opencv.core;
 //javadoc: Mat
 public class Mat {
 
-    public final long nativeObj;
+    public long nativeObj;
 
     public Mat(long addr)
     {
@@ -906,10 +906,12 @@ public class Mat {
         return retVal;
     }
 
-    @Override
-    protected void finalize() throws Throwable {
-        n_delete(nativeObj);
-        super.finalize();
+    public void free() {
+        if (nativeObj != 0) {
+            release();
+            n_delete(nativeObj);
+            nativeObj = 0;
+        }
     }
 
     // javadoc:Mat::toString()

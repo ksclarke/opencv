@@ -98,7 +98,9 @@
                 <option>-DWITH_GPHOTO2:BOOL=${WITH_GPHOTO2}</option>
                 <option>-DBUILD_opencv_apps:BOOL=${BUILD_opencv_apps}</option>
                 <option>-DBUILD_DOCS:BOOL=${BUILD_DOCS}</option>
+
                 <option>-Wno-dev</option>
+                <option>-Wa,--noexecstack</option>
               </options>
               <environmentVariables>
                 <CFLAGS>-Wa,--noexecstack</CFLAGS>
